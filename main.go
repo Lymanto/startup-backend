@@ -11,23 +11,23 @@ import (
 )
 
 func main() {
-	dsn := "root:@tcp(127.0.0.1:3306)/bwastartup?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:root@tcp(127.0.0.1:8889)/bwastartup?charset=utf8mb4&parseTime=True&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	
+
 	if err != nil {
-		log.Fatal(err.Error());
+		log.Fatal(err.Error())
 	}
 	userRepository := user.NewRepository(db)
 	userService := user.NewService(userRepository)
-	
+
 	userHandler := handler.NewUserHandler(userService)
 
-	router:= gin.Default()
+	router := gin.Default()
 	api := router.Group("/api/v1")
 
-	api.POST("/users",userHandler.RegisterUser)
-	api.POST("/sessions",userHandler.Login)
+	api.POST("/users", userHandler.RegisterUser)
+	api.POST("/sessions", userHandler.Login)
+	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 
 	router.Run()
 }
-
